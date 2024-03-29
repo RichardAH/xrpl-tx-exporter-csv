@@ -63,7 +63,9 @@
           },
           computed: {
             fields: function () {
-              return exportModule.fields.concat(['Destination', 'DestinationTag', 'SourceTag'])
+              if (this.withTxDetails) {
+                return exportModule.fields.concat(['Destination', 'DestinationTag', 'SourceTag'])
+              }
               return exportModule.fields
             }
           },
@@ -80,11 +82,13 @@
               this.transactions = []
               var vThis = this
               exportModule.app(this.account, function (tx) {
-                Object.assign(tx, {
-                  Destination: tx._tx.Destination || '',
-                  DestinationTag: tx._tx.DestinationTag || '',
-                  SourceTag: tx._tx.SourceTag || ''
-                })
+                if (vThis.withTxDetails) {
+                  Object.assign(tx, {
+                    Destination: tx._tx.Destination || '',
+                    DestinationTag: tx._tx.DestinationTag || '',
+                    SourceTag: tx._tx.SourceTag || ''
+                  })
+                }
                 vThis.transactions.push(tx)
               }, true)
             }
